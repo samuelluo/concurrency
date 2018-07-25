@@ -39,26 +39,41 @@ class Account {
     }
 };
 
-void transfer(Account* from, Account* to, int amount) {
+// Was running into compiler errors when passing references
+// Pass by pointer, for now
+// TODO: if from.balance >= amount, transfer; change return type to bool
+bool transfer(Account* from, Account* to, int amount) {
+    bool transferred = false;
     from->withdraw(amount);
     to->deposit(amount);
+    return transferred;
 }
 
 // --------------------------------------------------------
 int main() {
+    // Set up
     Account a (100);
     Account b (0);
+    std::thread t1;
+    std::thread t2;
+    std::thread t3, t4;
     a.deposit(200);
     std::cout << a.balance << ", " << b.balance << std::endl;
 
-    std::thread t1 (transfer, &a, &b, 100);
-    std::thread t2 (transfer, &a, &b, 100);
+    // Ending balance: [100, 200]
+    t1 = std::thread(transfer, &a, &b, 100);
+    t2 = std::thread(transfer, &a, &b, 100);
     t1.join();
     t2.join();
     std::cout << a.balance << ", " << b.balance << std::endl;
 
-    std::thread t3 (transfer, &a, &b, 200);
-    std::thread t4 (transfer, &b, &a, 200);
+    // Ending balance: [100, 200]
+    t1 = std::thread(transfer, &a, &b, 100);
+    t2 = std::thread(transfer, &b, &a, 100);
+    t3 = std::thread(transfer, &a, &b, 200);
+    t4 = std::thread(transfer, &b, &a, 200);
+    t1.join();
+    t2.join();
     t3.join();
     t4.join();
     std::cout << a.balance << ", " << b.balance << std::endl;
