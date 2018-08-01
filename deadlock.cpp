@@ -1,5 +1,7 @@
 // g++ -std=c++17 deadlock.cpp
-
+/*
+Playing around with deadlocks.
+*/
 #include <iostream>    // std::cout, std::endl;
 #include <mutex>       // std::mutex
 #include <thread>      // std::thread
